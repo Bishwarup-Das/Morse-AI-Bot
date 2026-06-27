@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Secrets / local config (pass via env vars or --env-file at runtime)
+.env
+
+# VCS / misc
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
