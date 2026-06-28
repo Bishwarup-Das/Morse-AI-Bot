@@ -12,14 +12,14 @@ WORKDIR /app
 
 # Install dependencies first (cached layer) using the lockfile
 COPY pyproject.toml uv.lock ./
-RUN --mount=type=cache,target=/root/.cache/uv \
+RUN --mount=type=cache,id=uv-cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-dev
 
 # Copy the application source
 COPY bot.py ./
 
 # Sync again to install the project itself
-RUN --mount=type=cache,target=/root/.cache/uv \
+RUN --mount=type=cache,id=uv-cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
 
 # Run as a non-root user for security

@@ -7,8 +7,6 @@ load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-print(BOT_TOKEN)
-
 MORSE = {
     'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..',
     'E': '.', 'F': '..-.', 'G': '--.', 'H': '....',
