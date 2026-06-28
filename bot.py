@@ -1,4 +1,6 @@
 import os
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
@@ -66,7 +68,28 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/decode <morse> - Convert Morse to text"
     )
 
+class HealthHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "text/plain")
+        self.end_headers()
+        self.wfile.write(b"OK")
+
+    def log_message(self, *args):
+        # Silence default request logging
+        pass
+
+def start_health_server():
+    # Render (and similar hosts) require a Web Service to bind to $PORT.
+    # This lightweight server keeps the service marked healthy while the
+    # bot runs via long-polling.
+    port = int(os.getenv("PORT", "8080"))
+    server = HTTPServer(("0.0.0.0", port), HealthHandler)
+    server.serve_forever()
+
 def main():
+    threading.Thread(target=start_health_server, daemon=True).start()
+
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
